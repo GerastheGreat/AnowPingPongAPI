@@ -1,0 +1,11 @@
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\bin\Debug\netcoreapp2.0\Anow.PingPong.Api.deps.json
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\bin\Debug\netcoreapp2.0\Anow.PingPong.Api.runtimeconfig.json
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\bin\Debug\netcoreapp2.0\Anow.PingPong.Api.runtimeconfig.dev.json
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\bin\Debug\netcoreapp2.0\Anow.PingPong.Api.dll
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\bin\Debug\netcoreapp2.0\Anow.PingPong.Api.pdb
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.csproj.CoreCompileInputs.cache
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.AssemblyInfoInputs.cache
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.AssemblyInfo.cs
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.dll
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.pdb
+C:\Users\Pieter Veldman\Desktop\Anow\appraisersnow-anow-ping-pong-api-2-fb2342c53f1d\src\Anow.PingPong.Api\obj\Debug\netcoreapp2.0\Anow.PingPong.Api.csprojResolveAssemblyReference.cache
