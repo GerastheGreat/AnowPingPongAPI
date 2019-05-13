@@ -12,29 +12,32 @@ namespace Anow.PingPong.Api
         private String player2 = "";
         private int pl1_score = 0;
         private int pl2_score = 0;
-        private DateTime dt = DateTime.Now;
+        private string dt = DateTime.Now.ToShortDateString();
 
-        public GameData(int id, String one, String two, int sc_one, int sc_two)
+        public GameData(int id, String one, String two, int sc_one, int sc_two, string datetime)
         {
             gameID = id;
             player1 = one;
             player2 = two;
             pl1_score = sc_one;
             pl2_score = sc_two;
-            dt = DateTime.Now;
+            if (datetime != null)
+                dt = datetime;
+            else
+                dt = DateTime.Now.ToString();
         }
         
-        public int getID()
+        public int getID() //gets id
         {
             return gameID;
         }
 
-        public bool hasPlayer(string pl)
+        public bool hasPlayer(string pl) //checks if the player is in this game
         {
             return ((pl == player1) || (pl == player2));
         }
 
-        public Object Print()
+        public Object Print() //prints the data, format can be changed if different output is desired
         {
             return new
             {
