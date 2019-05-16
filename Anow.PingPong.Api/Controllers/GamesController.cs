@@ -13,125 +13,165 @@ namespace Anow.PingPong.Api.Controllers
     {
 
         [HttpGet]
-        public object[] Get(int id, String player) //gets games. gets all games but can get by player or ID
+        [HttpGet("{id}")]
+        public object[] Get(string id, string player) //gets games. gets all games but can get by player or ID
         {
-            if (id > 0) //game id cant be less than one and the default value for this variable is 0
-                return filterById(id);
+
+            object[] all = new object[Program.games.Count];
+
+            if (id != null) //game id cant be less than one and the default value for this variable is 0
+                all = filterById(id);
             else if (player != null) //filters by player
-                return filterByPlayer(player);
+                all = filterByPlayer(player);
             else if (Program.games.Count > 0) //if no id or player is passed and there are stored games
-            {
-                object[] all = new object[Program.games.Count]; 
                 for (int i = 0; i < Program.games.Count; i++) //gets info from all stored games
-                    all[i] = Program.games[i].Print();
+                    all[i] = Program.games[i];
 
-
-                return all;
-
-            }
-            else
-                return new[] { "no games recorded yet." };
+            return all; //return the array
         }
 
-
-        [HttpGet("{id}")]
-        public object[] filterById(int id)
+        //finds the game with the matching ID, if it exists
+        public object[] filterById(string id)
         {
+
+            object[] all = new object[1]; //array created. size is one since each id is unique only one result can exist
 
             if (Program.games.Count > 0) //if there are stored games
             {
-                object[] all = new object[1]; //array created. size is one since each id is unique only one result can exist
                 for (int i = 0; i < Program.games.Count; i++) //cycles through each game
-                    if (Program.games[i].getID().Equals(id)) //checks the id
-                        all[0] = Program.games[i].Print(); //when a match is found, it is placed in the array
-
-                if (all[0] != null) //if there is a result
-                    return all; //returns the array
-                else
-                    return new object[] {"no games with that '"+id+"' as id."}; //otherwise returns message. 
-                                                                      //deleting the if statement will return an empty array
+                    if (Program.games[i].id.Equals(id)) //checks the id
+                    {
+                        all[0] = Program.games[i]; //when a match is found, it is placed in the array
+                        i = Program.games.Count;    //to exit the loop
+                    }
+                    
 
             }
-            else
-                return new object[] {"no games recorded yet." };
+            if (all[0] == null)
+            {
+                all = new GameData[0];                 //sets the array to 0 size, so no nulls are returned
+                this.HttpContext.Response.StatusCode = 404; //sets status code to 404, since no games with that game id are found
+            }
+            return all; //returns the array
         }
 
         //filters the Games by player
         public object[] filterByPlayer(String pl)
-        {   //checks to make sure there are games stored
+        {
+
+            object[] all = new object[Program.games.Count];
+
+            //checks to make sure there are games stored
             if (Program.games.Count > 0)
             {
                 int counter = 0; //records how many valid games there are 
-                object[] all = new object[Program.games.Count];
                 for (int i = 0; i < Program.games.Count; i++) //goes through all games 
                     if (Program.games[i].hasPlayer(pl))
                     {
-                        all[counter] = Program.games[i].Print(); //stores matching games
+                        all[counter] = Program.games[i]; //stores matching games
                         counter++; //increments the counter for each matching game
                     }
 
                 object[] temp = all; //creates a temp array
-                all = new object[Program.games.Count]; //creates an array that is the correct size
+                all = new object[counter]; //creates an array that is the correct size
                 for (int i = 0; i < counter; i++) 
                     all[i] = temp[i];   //transfers all games that meet the criteria to the trimmed array
 
-                if(counter > 0) //if there are games to show
-                    return all;
-                else        //if there are no games played by the person. to return an empty array simply remove the if statement and return the array
-                    return new object[] {"this person has played no games."}; 
             }
-            else
-                return new object[] {"no games recorded yet." };
+
+
+            return all;
         }
 
         [HttpPut]
-        public object Put()
+        public object[] Put([FromBody] GameData gd)
         {
-             return new { Method = "not usable yet."};
+            if (gd != null)         //if any mistakes when creating and passing the object, gd will be null and it'll crash when trying to access it
+            {
+                GameData old = null; //the game to be updated
+                int location = 0;   //the game location in the ist
+
+                for (int i = 0; i < Program.games.Count; i++)
+                    if (gd.id.Equals(Program.games[i].id))
+                    {
+                        old = Program.games[i];
+                        location = i;
+                        i = Program.games.Count;
+                    }
+
+                if (old != null) //if a game is found
+                {   //fill in the missing data
+                    if (gd.player1 == null)
+                        gd.player1 = old.player1;
+                    if (gd.player2 == null)
+                        gd.player2 = old.player2;
+                    if (gd.score1 == -1)
+                        gd.score1 = old.score1;
+                    if (gd.score2 == -1)
+                        gd.score2 = old.score2;
+                    if (gd.playDate == null)
+                        gd.playDate = old.playDate;
+
+                    if (isValid(gd))    //checks if the data is still valid
+                        Program.games[location] = gd; //replaces the gamedata with the updated version
+                }
+                else
+                    this.HttpContext.Response.StatusCode = 404; //sets status code to 404, since no games with that game id are found
+                                                                //just like in the Get Id request
+            }
+            return Get(null, null);
         }
 
         [HttpPost]
-        public object Post(String player1, int score1, String player2, int score2, string playDate) //gets input data
+        public object[] Post([FromBody] GameData gd) //gets input data
         {
-            if (isValid(player1, player2, score1, score2, playDate)) //validates input data
-            {
-
-                Program.games.Add(new GameData(GenID(), player1, player2, score1, score2, playDate)); //adds the game to the list
-                return Get(0, null); //displays all games in list
+            if (gd != null)         //if any mistakes when creating and passing the object, gd will be null and it'll crash when trying to access it
+            { 
+                gd.id = GenID();        //sets the gameID
+                if (gd.playDate == null) gd.playDate = DateTime.Now.ToString(); //was being set on create when no value was given, but then it cant be verified when a put request is made
+                if (isValid(gd))              //if it's valid
+                {
+                    Program.games.Add(gd);  //adds it to the list
+                    this.HttpContext.Response.StatusCode = 201; //success returns 201
+                }
             }
-            else return new { Error = "Invalid data" };
+            return Get(null, null);     //prints all games
+            
         }
 
         //validates input data, only checks for valid scores currently
-        private bool isValid(String p1, String p2, int sc1, int sc2, string dt)
+        private bool isValid(GameData gd)
         {
             bool pass = true; //default to true, if a condition is not met, becomes false
-            if (sc1 < 21 && sc2 < 21) //verifiess at least one person got a minimum of 21
+            if ((gd.score1 < 21 && gd.score2 < 21) || gd.score1 < 0 || gd.score2 < 0) //verifiess at least one person got a minimum of 21 and that no score is less than 0
                 pass = false;
-            if (Math.Abs(sc1 - sc2) < 2) //verifies the winner won by at least 2
+            if (Math.Abs(gd.score1 - gd.score2) < 2) //verifies the winner won by at least 2
+                pass = false;
+            if (gd.player1.Length == 0 || gd.player2.Length == 0)
                 pass = false;
             return pass;
         }
+        
 
         [HttpDelete]
-        public object Del(int id) //delete game by id
+        public object[] Del(string id) //delete game by id
         {
             int temp = Program.games.Count;
             for (int i = 0; i < temp; i++) //cycles through all games
-                if (Program.games[i].getID().Equals(id)) //when matching id is found
+                if (Program.games[i].id.Equals(id)) //when matching id is found
                 {
                     Program.games.RemoveAt(i);          //the game is removed
                     i = temp;                           //and the loop is stopped
                 }
-            return Get(0,null);     //after game is deleted, returns remaining games if any exist
+            return Get(null, null);     //after game is deleted, returns remaining games if any exist
         }
 
-        private int GenID() //ID generation, just a simple int but can be modified
+        private string GenID() //ID generation, just a simple int but can be modified
         {
             if (Program.games.Count == 0)
-                return 1;
+                return "1";
             else
-                return Program.games[Program.games.Count - 1].getID()+1;
+                return ""+(Convert.ToInt32(Program.games[Program.games.Count - 1].id)+1);
         }
 
     }
